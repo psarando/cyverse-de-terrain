@@ -190,6 +190,7 @@
                                      {:name "admin-communities", :description "Community Administration Endpoints"}
                                      {:name "admin-filesystem", :description "File System Administration Endpoints"}
                                      {:name "apps", :description, "Apps Endpoints"}
+                                     {:name "apps-categories", :description, "App Category Endpoints"}
                                      {:name "app-element-types", :description, "App Element Endpoints"}
                                      {:name "coge", :description "CoGe Endpoints"}
                                      {:name "collaborator-lists", :description "Collaborator List Endpoints"}

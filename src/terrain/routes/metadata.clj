@@ -1,8 +1,10 @@
 (ns terrain.routes.metadata
   (:use [common-swagger-api.schema]
         [common-swagger-api.schema.apps :only [AppListing
+                                               AppListingPagingParams
                                                AppListingSummary
                                                SystemId]]
+        [common-swagger-api.schema.apps.categories]
         [ring.util.http-response :only [ok]]
         [terrain.routes.schemas.apps]
         [terrain.services.metadata.apps]
@@ -20,11 +22,25 @@
   (optional-routes
    [config/app-routes-enabled]
 
-   (GET "/apps/categories" [:as {params :params}]
-     (service/success-response (apps/get-app-categories params)))
+   (context
+     "/apps/categories" []
+     :tags ["apps-categories"]
 
-   (GET "/apps/categories/:system-id/:category-id" [system-id category-id :as {params :params}]
-     (service/success-response (apps/apps-in-category system-id category-id params)))))
+     (GET "/" []
+          :query [params CategoryListingParams]
+          :return AppCategoryListing
+          :summary AppCategoryListingSummary
+          :description AppCategoryListingDocs
+          (ok (apps/get-app-categories params)))
+
+     (GET "/:system-id/:category-id" [system-id category-id :as {params :params}]
+          :path-params [system-id :- SystemId
+                        category-id :- AppCategoryIdPathParam]
+          :query [params AppListingPagingParams]
+          :return AppCategoryAppListing
+          :summary AppCategoryAppListingSummary
+          :description AppCategoryAppListingDocs
+          (ok (apps/apps-in-category system-id category-id (update params (optional-key->keyword SortFieldOptionalKey) name)))))))
 
 (defn admin-category-routes
   []
